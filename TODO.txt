@@ -1,0 +1,19 @@
+	- le symbiote doit avoir un systeme de détection des crash pour kill un serveur crash sur sa propre machine et informer sphantom que le server a bien été kill
+	- le symbiote doit communiquer au plugin Network le nom du vps sur lequel il se trouve !
+	
+	
+	Schema de l'overspan :
+	
+	1. Sphantom request instance -> Vultr api/ configured server
+	2. Symbiote boot via vultr (if configured not free) - > send to Sphantom Vps label, ram, vps statut | every x seconds 
+	3. Sphantom request server -> Symbiote , server statut creating
+	4. Symbiote create server -> send to Sphantom Server label, Vps label, statut booting
+	5. Server send to sphantom -> server infos + statut opened
+
+    
+	Schema de l'overspan sphantom off pour etape 1 :
+	
+	1. Sphantom request instance -> Vultr api
+	2. Sphantom request server -> Symbiote , server statut creating
+	3. Symbiote create server -> send to Sphantom Server label, Vps label, statut booting
+	4. Server send to sphantom -> server infos + statut opened
