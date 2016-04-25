@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 
 import sceat.Symbiote;
 import sceat.domain.network.Vps.VpsState;
+import sceat.domain.protocol.MessagesType;
 
 public class PacketPhantomSymbiote extends PacketPhantom {
 
@@ -54,6 +55,11 @@ public class PacketPhantomSymbiote extends PacketPhantom {
 
 	public int getRam() {
 		return ram;
+	}
+
+	@Override
+	public void handleData(MessagesType type) {
+		// TODO:
 	}
 
 }

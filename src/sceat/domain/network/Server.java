@@ -12,7 +12,7 @@ import java.util.UUID;
 import sceat.domain.minecraft.Grades;
 import sceat.domain.minecraft.RessourcePack;
 import sceat.domain.minecraft.Statut;
-import sceat.domain.protocol.destinationKey;
+import sceat.domain.protocol.DestinationKey;
 
 public class Server {
 
@@ -30,7 +30,7 @@ public class Server {
 	/**
 	 * Lors de la gestion, sphantom decide en fonction du nombre de joueurs combien d'instance de ce type de serveur sont requise
 	 * <p>
-	 * si il y a déja suffisament d'instance, "needed" passe sur false et permet ainsi la destruction du serveur si le dernier joueur se déconnecte
+	 * si il y a dï¿½ja suffisament d'instance, "needed" passe sur false et permet ainsi la destruction du serveur si le dernier joueur se dï¿½connecte
 	 */
 	private boolean needed = true;
 
@@ -150,23 +150,23 @@ public class Server {
 	public static enum ServerType {
 		Proxy(
 				RessourcePack.RESSOURCE_PACK_DEFAULT,
-				destinationKey.PROXY,
-				destinationKey.HUBS_AND_PROXY,
-				destinationKey.HUBS_PROXY_SPHANTOM,
-				destinationKey.HUBS_PROXY_SPHANTOM_SYMBIOTE,
-				destinationKey.ALL,
-				destinationKey.ALL_SPHANTOM),
+				DestinationKey.PROXY,
+				DestinationKey.HUBS_AND_PROXY,
+				DestinationKey.HUBS_PROXY_SPHANTOM,
+				DestinationKey.HUBS_PROXY_SPHANTOM_SYMBIOTE,
+				DestinationKey.ALL,
+				DestinationKey.ALL_SPHANTOM),
 		Lobby(
 				RessourcePack.RESSOURCE_PACK_DEFAULT,
-				destinationKey.ALL,
-				destinationKey.HUBS,
-				destinationKey.HUBS_AND_PROXY,
-				destinationKey.HUBS_PROXY_SPHANTOM,
-				destinationKey.HUBS_PROXY_SPHANTOM_SYMBIOTE,
-				destinationKey.ALL_SPHANTOM),
-		Agares(RessourcePack.AGARES, destinationKey.ALL, destinationKey.SERVEURS, destinationKey.SRV_AGARES, destinationKey.ALL_SPHANTOM),
-		AresRpg(RessourcePack.ARESRPG, destinationKey.ALL, destinationKey.SERVEURS, destinationKey.SRV_ARES, destinationKey.ALL_SPHANTOM),
-		Iron(RessourcePack.IRON, destinationKey.ALL, destinationKey.SERVEURS, destinationKey.SRV_IRON, destinationKey.ALL_SPHANTOM);
+				DestinationKey.ALL,
+				DestinationKey.HUBS,
+				DestinationKey.HUBS_AND_PROXY,
+				DestinationKey.HUBS_PROXY_SPHANTOM,
+				DestinationKey.HUBS_PROXY_SPHANTOM_SYMBIOTE,
+				DestinationKey.ALL_SPHANTOM),
+		Agares(RessourcePack.AGARES, DestinationKey.ALL, DestinationKey.SERVEURS, DestinationKey.SRV_AGARES, DestinationKey.ALL_SPHANTOM),
+		AresRpg(RessourcePack.ARESRPG, DestinationKey.ALL, DestinationKey.SERVEURS, DestinationKey.SRV_ARES, DestinationKey.ALL_SPHANTOM),
+		Iron(RessourcePack.IRON, DestinationKey.ALL, DestinationKey.SERVEURS, DestinationKey.SRV_IRON, DestinationKey.ALL_SPHANTOM);
 
 		private String[] keys;
 		private RessourcePack pack;

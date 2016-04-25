@@ -6,7 +6,7 @@ package sceat.domain.protocol;
  * @author MrSceat
  *
  */
-public class destinationKey {
+public class DestinationKey {
 
 	public static final String ALL = "all";
 	public static final String ALL_SPHANTOM = "all_sphantom";

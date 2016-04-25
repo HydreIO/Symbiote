@@ -11,10 +11,22 @@ import java.util.Map;
 
 import sceat.Symbiote;
 import sceat.domain.Security;
+import sceat.domain.protocol.MessagesType;
 
 public abstract class PacketPhantom {
 
-	public static final int maxPacketSize = 512;
+	static {
+		Symbiote.print("Initialising packets...");
+		try {
+			registerPacket((byte) 4, PacketPhantomBootServer.class);
+			registerPacket((byte) 5, PacketPhantomSymbiote.class);
+		} catch (PacketIdAlrealyUsedException e) {
+			Symbiote.printStackTrace(e);
+		}
+	}
+
+	public static final int MAX_PACKET_SIZE = 512;
+
 	private static final HashMap<Byte, Class<? extends PacketPhantom>> packets = new HashMap<>();
 	private Security secu;
 
@@ -25,7 +37,7 @@ public abstract class PacketPhantom {
 	}
 
 	/**
-	 * méthode apellé pendant pendant la serialization
+	 * mÃ©thode apellÃ© pendant pendant la serialization
 	 */
 	public void encodeSecurity() {
 		writeString(getSecu().getSerial());
@@ -33,20 +45,10 @@ public abstract class PacketPhantom {
 	}
 
 	/**
-	 * méthode apellé pendant pendant la deserialization
+	 * mÃ©thode apellÃ© pendant pendant la deserialization
 	 */
 	public void decodeSecurity() {
 		this.secu = new Security(readString(), readString());
-	}
-
-	public static void init() {
-		Symbiote.print("Initialising packets...");
-		try {
-			registerPacket((byte) 4, PacketPhantomBootServer.class);
-			registerPacket((byte) 5, PacketPhantomSymbiote.class);
-		} catch (PacketIdAlrealyUsedException e) {
-			Symbiote.printStackTrace(e);
-		}
 	}
 
 	@FunctionalInterface
@@ -112,7 +114,7 @@ public abstract class PacketPhantom {
 		return packets.get(id);
 	}
 
-	private byte[] buffer = new byte[maxPacketSize];
+	private byte[] buffer = new byte[MAX_PACKET_SIZE];
 	private volatile int writePos = 1;
 	private volatile int readPos = 1;
 
@@ -121,7 +123,7 @@ public abstract class PacketPhantom {
 	}
 
 	/**
-	 * Methode apellé dans le packetSender avant d'envoyer le packet
+	 * Methode apellÃ© dans le packetSender avant d'envoyer le packet
 	 * 
 	 * @param secu
 	 */
@@ -184,6 +186,13 @@ public abstract class PacketPhantom {
 	protected abstract void serialize_();
 
 	protected abstract void deserialize_();
+
+	/**
+	 * Method called after deserialization
+	 * 
+	 * @param type
+	 */
+	public abstract void handleData(MessagesType type);
 
 	// ////////////////////////////////////////
 	// Read //

@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import sceat.Symbiote;
 import sceat.domain.network.Server;
 import sceat.domain.network.Server.ServerType;
+import sceat.domain.protocol.MessagesType;
 
 public class PacketPhantomBootServer extends PacketPhantom {
 
@@ -71,6 +72,11 @@ public class PacketPhantomBootServer extends PacketPhantom {
 
 	public int getMaxP() {
 		return maxP;
+	}
+
+	@Override
+	public void handleData(MessagesType type) {
+		// TODO:
 	}
 
 }
