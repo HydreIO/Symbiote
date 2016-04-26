@@ -1,6 +1,8 @@
 package sceat;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -20,6 +22,7 @@ import sceat.domain.adapter.general.IserverMC;
 import sceat.domain.protocol.PacketSender;
 import sceat.domain.protocol.packet.PacketPhantom;
 import sceat.domain.utils.Constant;
+import sceat.domain.utils.cosmos.MemoryParser;
 
 public class Symbiote {
 
@@ -41,6 +44,7 @@ public class Symbiote {
 		VpsLabel = cmd.getOptionValue("label");
 		print("Launching symbiote..");
 		print("VpsLabel : " + VpsLabel);
+		print("Memory : " + MemoryParser.getRam() + "Go");
 		if (cmd.hasOption("auth") && cmd.hasOption("host") && cmd.hasOption("port")) {
 			String auth = cmd.getOptionValue("auth");
 			String host = cmd.getOptionValue("host");
@@ -119,11 +123,29 @@ public class Symbiote {
 	}
 
 	public static void printStackTrace(Exception e) {
-		getLogger().log(Level.SEVERE, e.getMessage(), e);
+		getLogger().log(Level.SEVERE, "[Trace] > " + stackTrace(e));
 	}
 
 	public static void printStackTrace(Throwable e) {
-		getLogger().log(Level.SEVERE, e.getMessage(), e);
+		getLogger().log(Level.SEVERE, "[Trace] > " + stackTrace(e));
+	}
+
+	private static String stackTrace(Throwable cause) {
+		if (cause == null) return "";
+		StringWriter sw = new StringWriter(1024);
+		final PrintWriter pw = new PrintWriter(sw);
+		cause.printStackTrace(pw);
+		pw.flush();
+		return sw.toString();
+	}
+
+	private static String stackTrace(Exception cause) {
+		if (cause == null) return "";
+		StringWriter sw = new StringWriter(1024);
+		final PrintWriter pw = new PrintWriter(sw);
+		cause.printStackTrace(pw);
+		pw.flush();
+		return sw.toString();
 	}
 
 	public static Logger getLogger() {

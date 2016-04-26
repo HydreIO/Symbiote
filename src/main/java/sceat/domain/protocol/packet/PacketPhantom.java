@@ -33,7 +33,7 @@ public abstract class PacketPhantom {
 	private static void registerPacket(byte id, Class<? extends PacketPhantom> packet) throws PacketIdAlrealyUsedException {
 		if (packets.containsKey(id)) throw new PacketIdAlrealyUsedException(id, packets.get(id));
 		packets.put(id, packet);
-		Symbiote.print(packet.getCanonicalName() + "[" + id + "] Registered");
+		Symbiote.print(packet.getName().substring(packet.getName().lastIndexOf('.') + 1) + "[" + id + "] Registered");
 	}
 
 	/**
