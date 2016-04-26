@@ -88,6 +88,7 @@ public class PacketPhantomBootServer extends PacketPhantom {
 				if (!Symbiote.VpsLabel.equalsIgnoreCase(getVpsLabel())) return;
 			} else if (!getIp().getHostAddress().equals(InetAddress.getLocalHost().getHostAddress())) return;
 			Symbiote.getInstance().getServerBuilder().startServer(getType(), getLabel(), getVpsLabel(), getRam());
+			Symbiote.print("Creating MC server with param : |Label('" + getLabel() + "')|VpsLabel('" + getVpsLabel() + "')|Type('" + getType() + "')|MaxP(" + getMaxP() + ")");
 		} catch (Exception e) {
 			Symbiote.printStackTrace(e);
 		} finally {
