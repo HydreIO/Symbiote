@@ -18,6 +18,7 @@ import org.apache.commons.cli.ParseException;
 import sceat.domain.Core;
 import sceat.domain.adapter.general.IserverMC;
 import sceat.domain.protocol.PacketSender;
+import sceat.domain.protocol.packet.PacketPhantom;
 import sceat.domain.utils.Constant;
 
 public class Symbiote {
@@ -78,6 +79,7 @@ public class Symbiote {
 	public Symbiote(String user, String pass, String host, int port) {
 		instance = this;
 		running = true;
+		PacketPhantom.registerPackets();
 		this.serverBuilder = null;
 		new PacketSender(user, pass, host, port);
 		new Core();
