@@ -36,12 +36,12 @@ public class PacketSender {
 
 	public void sendServer(PacketPhantomServerInfo pkt) {
 		Symbiote.print(">>>>]SEND] PacketServerInfos |to:SPHANTOM");
-		getBroker().sendServer(pkt);
+		getBroker().sendServer(pkt.serialize());
 	}
 
 	public void sendInfos(PacketPhantomSymbiote pkt) {
 		Symbiote.print(">>>>]SEND] PacketSymbiote |to:SPHANTOM");
-		getBroker().sendInfos(pkt);
+		getBroker().sendInfos(pkt.serialize());
 	}
 
 }
