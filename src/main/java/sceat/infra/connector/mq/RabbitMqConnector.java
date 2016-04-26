@@ -1,26 +1,19 @@
 package sceat.infra.connector.mq;
 
 import java.io.IOException;
+import java.nio.channels.Channel;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
-import sceat.Main;
-import sceat.SPhantom;
-import sceat.domain.adapter.mq.IMessaging;
+import sceat.Symbiote;
+import sceat.domain.adapter.mq.Imessaging;
 import sceat.domain.protocol.DestinationKey;
 import sceat.domain.protocol.MessagesType;
-import sceat.domain.protocol.packets.PacketPhantomBootServer;
-import sceat.domain.protocol.packets.PacketPhantomDestroyInstance;
-import sceat.domain.protocol.packets.PacketPhantomHeartBeat;
-import sceat.domain.protocol.packets.PacketPhantomPlayer;
-import sceat.domain.protocol.packets.PacketPhantomReduceServer;
-import sceat.domain.protocol.packets.PacketPhantomServerInfo;
+import sceat.domain.protocol.packet.PacketPhantomBootServer;
+import sceat.domain.protocol.packet.PacketPhantomServerInfo;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-
-public class RabbitMqConnector implements IMessaging {
+public class RabbitMqConnector implements Imessaging {
 
 	private static RabbitMqConnector instance;
 	private RabbitMqReceiver receiver;
@@ -48,7 +41,7 @@ public class RabbitMqConnector implements IMessaging {
 	public void init(String user, String passwd, boolean local) {
 		instance = this;
 		if (local) {
-			SPhantom.print("Local mode ! No messaging service.");
+			Symbiote.print("Local mode ! No messaging service.");
 			return;
 		}
 		getFactory().setHost(SPhantom.getInstance().getSphantomConfig().getRabbitAdress());
