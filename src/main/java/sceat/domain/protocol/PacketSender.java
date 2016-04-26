@@ -4,8 +4,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import sceat.Symbiote;
+import sceat.domain.Security;
 import sceat.domain.adapter.mq.Imessaging;
 import sceat.domain.network.Vps.VpsState;
+import sceat.domain.protocol.packet.PacketPhantom;
 import sceat.domain.protocol.packet.PacketPhantomServerInfo;
 import sceat.domain.protocol.packet.PacketPhantomSymbiote;
 import sceat.domain.utils.cosmos.MemoryParser;
@@ -34,13 +36,19 @@ public class PacketSender {
 		return broker;
 	}
 
+	private void setSecurity(PacketPhantom pkt) {
+		pkt.setSecu(Security.generateNull());
+	}
+
 	public void sendServer(PacketPhantomServerInfo pkt) {
 		Symbiote.print(">>>>]SEND] PacketServerInfos |to:SPHANTOM");
+		setSecurity(pkt);
 		getBroker().sendServer(pkt.serialize());
 	}
 
 	public void sendInfos(PacketPhantomSymbiote pkt) {
 		Symbiote.print(">>>>]SEND] PacketSymbiote |to:SPHANTOM");
+		setSecurity(pkt);
 		getBroker().sendInfos(pkt.serialize());
 	}
 
