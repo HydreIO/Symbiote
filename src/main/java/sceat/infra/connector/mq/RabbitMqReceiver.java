@@ -3,7 +3,7 @@ package sceat.infra.connector.mq;
 import java.io.IOException;
 import java.util.Arrays;
 
-import sceat.Main;
+import sceat.Symbiote;
 import sceat.domain.protocol.DestinationKey;
 import sceat.domain.protocol.MessagesType;
 import sceat.domain.protocol.handler.PacketHandler;
@@ -30,7 +30,7 @@ public class RabbitMqReceiver {
 			if (RabbitMqConnector.routingEnabled) bind();
 			startReceiver();
 		} catch (IOException e) {
-			Main.printStackTrace(e);
+			Symbiote.printStackTrace(e);
 		}
 	}
 
@@ -51,17 +51,14 @@ public class RabbitMqReceiver {
 	 *            la destination
 	 */
 	private void bind(MessagesType msg) {
-		bind(DestinationKey.ALL_SPHANTOM, msg.getName());
-		bind(DestinationKey.SPHANTOM, msg.getName());
 		bind(DestinationKey.HUBS_PROXY_SPHANTOM_SYMBIOTE, msg.getName());
-		bind(DestinationKey.HUBS_PROXY_SPHANTOM, msg.getName());
 	}
 
 	private void bind(String dek, String msg) {
 		try {
 			getChannel().queueBind(qname, msg, dek);
 		} catch (IOException e) {
-			Main.printStackTrace(e);
+			Symbiote.printStackTrace(e);
 		}
 	}
 

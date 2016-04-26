@@ -14,40 +14,61 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import sceat.domain.protocol.PacketSender;
+
 public class Symbiote {
 
 	public static Logger logger = Logger.getLogger("Symbiote.class");
 	public static File folder;
 	private static Symbiote instance;
+	public static String VpsLabel;
 
 	public static void main(String[] args) {
 		folder = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
 		Options opt = new Options();
 		CommandLine cmd = setupOptions(opt, args);
-		if (cmd.hasOption("auth")) {
-			String str = cmd.getOptionValue("auth");
-			if (!str.contains("@")) {
+		if (!cmd.hasOption("label")) {
+			print("[WARN] Missing argument -label \"label\" (vm host/server label)");
+			shutDown();
+		}
+		VpsLabel = cmd.getOptionValue("label");
+		Symbiote.print("Launching symbiote..");
+		Symbiote.print("VpsLabel : " + VpsLabel);
+		if (cmd.hasOption("auth") && cmd.hasOption("host") && cmd.hasOption("port")) {
+			String auth = cmd.getOptionValue("auth");
+			String host = cmd.getOptionValue("host");
+			String port = cmd.getOptionValue("port");
+			if (!auth.contains("@")) {
 				print("[WARN] Invalid argument ! syntaxe must be \"user@pass\" for -auth");
-				shutdown();
+				shutDown();
 			}
-			String user = str.substring(0, args[1].indexOf('@'));
-			String pass = str.substring(args[1].indexOf('@') + 1);
-			new Symbiote(user, pass);
+			if (!port.matches("^-?\\d+$")) {
+				print("[WARN] Invalid argument ! -port is not a number");
+				shutDown();
+			}
+			int portt = Integer.parseInt(port);
+			String user = auth.substring(0, args[1].indexOf('@'));
+			String pass = auth.substring(args[1].indexOf('@') + 1);
+			new Symbiote(user, pass, host, portt);
 		} else {
-			print("[ERR] -auth \"user@pass\" argument required !");
-			shutdown();
+			print("[ERR] An argument is missing, required args :");
+			print("> -auth \"user@pass\"");
+			print("> -host \"0.0.0.0\"");
+			print("> -port \"000\"");
+			shutDown();
 		}
 	}
 
-	public static void shutdown() {
+	public static void shutDown() {
 		print("Shuting down..");
 		print("Bye.");
 		System.exit(1);
 	}
 
-	public Symbiote(String user, String pass) {
+	public Symbiote(String user, String pass, String host, int port) {
 		instance = this;
 		initLogger();
+		new PacketSender(user, pass, host, port);
 
 	}
 
@@ -78,6 +99,9 @@ public class Symbiote {
 
 	public static CommandLine setupOptions(Options opt, String[] args) {
 		opt.addOption("auth", true, "RabbitMq User@Pass");
+		opt.addOption("host", true, "RabbitMq host");
+		opt.addOption("port", true, "RabbitMq port");
+		opt.addOption("label", true, "Vm host/Server label from api");
 		try {
 			return new BasicParser().parse(opt, args);
 		} catch (ParseException e) {
