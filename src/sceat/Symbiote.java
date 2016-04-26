@@ -28,21 +28,24 @@ public class Symbiote {
 			String str = cmd.getOptionValue("auth");
 			if (!str.contains("@")) {
 				print("[WARN] Invalid argument ! syntaxe must be \"user@pass\" for -auth");
-				print("Shuting down..");
-				print("Bye.");
-				System.exit(1);
+				shutdown();
 			}
 			String user = str.substring(0, args[1].indexOf('@'));
 			String pass = str.substring(args[1].indexOf('@') + 1);
+			new Symbiote(user, pass);
 		} else {
 			print("[ERR] -auth \"user@pass\" argument required !");
-			print("Shuting down..");
-			print("Bye.");
-			System.exit(1);
+			shutdown();
 		}
 	}
 
-	public Symbiote() {
+	public static void shutdown() {
+		print("Shuting down..");
+		print("Bye.");
+		System.exit(1);
+	}
+
+	public Symbiote(String user, String pass) {
 		instance = this;
 		initLogger();
 

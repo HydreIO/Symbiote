@@ -59,7 +59,6 @@ public class PacketPhantomSymbiote extends PacketPhantom {
 
 	@Override
 	public void handleData(MessagesType type) {
-		// TODO:
 	}
 
 }
