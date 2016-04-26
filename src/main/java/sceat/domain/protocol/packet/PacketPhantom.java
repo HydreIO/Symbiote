@@ -15,7 +15,7 @@ import sceat.domain.protocol.MessagesType;
 
 public abstract class PacketPhantom {
 
-	static {
+	public static void registerPackets() {
 		Symbiote.print("Initialising packets...");
 		try {
 			registerPacket((byte) 4, PacketPhantomBootServer.class);

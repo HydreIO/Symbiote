@@ -1,6 +1,7 @@
 package sceat;
 
 import java.io.File;
+import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -17,6 +18,7 @@ import org.apache.commons.cli.ParseException;
 import sceat.domain.Core;
 import sceat.domain.adapter.general.IserverMC;
 import sceat.domain.protocol.PacketSender;
+import sceat.domain.utils.Constant;
 
 public class Symbiote {
 
@@ -27,15 +29,17 @@ public class Symbiote {
 
 	public static void main(String[] args) {
 		folder = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+		initLogger();
 		Options opt = new Options();
 		CommandLine cmd = setupOptions(opt, args);
+		Constant.bootPrint().forEach(Symbiote::print);
 		if (!cmd.hasOption("label")) {
 			print("[WARN] Missing argument -label \"label\" (vm host/server label)");
 			shutDown();
 		}
 		VpsLabel = cmd.getOptionValue("label");
-		Symbiote.print("Launching symbiote..");
-		Symbiote.print("VpsLabel : " + VpsLabel);
+		print("Launching symbiote..");
+		print("VpsLabel : " + VpsLabel);
 		if (cmd.hasOption("auth") && cmd.hasOption("host") && cmd.hasOption("port")) {
 			String auth = cmd.getOptionValue("auth");
 			String host = cmd.getOptionValue("host");
@@ -49,8 +53,8 @@ public class Symbiote {
 				shutDown();
 			}
 			int portt = Integer.parseInt(port);
-			String user = auth.substring(0, args[1].indexOf('@'));
-			String pass = auth.substring(args[1].indexOf('@') + 1);
+			String user = auth.substring(0, auth.indexOf('@'));
+			String pass = auth.substring(auth.indexOf('@') + 1);
 			new Symbiote(user, pass, host, portt);
 		} else {
 			print("[ERR] An argument is missing, required args :");
@@ -62,23 +66,54 @@ public class Symbiote {
 	}
 
 	private IserverMC serverBuilder;
+	private boolean running = false;
 
 	public static void shutDown() {
+		Symbiote.getInstance().running = false;
 		print("Shuting down..");
 		print("Bye.");
-		System.exit(1);
+		System.exit(0);
 	}
 
 	public Symbiote(String user, String pass, String host, int port) {
 		instance = this;
-		initLogger();
+		running = true;
 		this.serverBuilder = null;
 		new PacketSender(user, pass, host, port);
 		new Core();
+		awaitForInput();
+	}
+
+	public boolean isRunning() {
+		return this.running;
 	}
 
 	public IserverMC getServerBuilder() {
 		return serverBuilder;
+	}
+
+	public void awaitForInput() {
+		@SuppressWarnings("resource")
+		Scanner scan = new Scanner(System.in);
+		while (isRunning()) {
+			print("Send Input (type help for show cmds) :");
+			print(".. >_");
+			String nex = scan.next();
+			switch (nex) {
+				case "help":
+				case "Help":
+					print("> exit [shutdown instance]");
+					break;
+				case "exit":
+				case "shutdown":
+					shutDown();
+					break;
+				default:
+					print("Unknow command!");
+					break;
+			}
+		}
+
 	}
 
 	public static void printStackTrace(Exception e) {
