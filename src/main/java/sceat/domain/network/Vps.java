@@ -1,6 +1,7 @@
 package sceat.domain.network;
 
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,9 +54,22 @@ public class Vps {
 	}
 
 	public static enum VpsState {
-		Deploying,
-		Online,
-		Destroying
-	}
+		Deploying((byte) 0),
+		Online((byte) 1),
+		Destroying((byte) 2);
 
+		private byte id;
+
+		private VpsState(byte id) {
+			this.id = id;
+		}
+
+		public byte getId() {
+			return id;
+		}
+
+		public static VpsState fromId(byte id) {
+			return Arrays.stream(values()).filter(i -> i.id == id).findFirst().orElse(null);
+		}
+	}
 }

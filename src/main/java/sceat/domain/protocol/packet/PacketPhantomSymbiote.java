@@ -12,7 +12,7 @@ public class PacketPhantomSymbiote extends PacketPhantom {
 	@Override
 	protected void serialize_() {
 		writeString(getVpsLabel());
-		writeString(getState().name());
+		writeByte(getState().getId());
 		writeInt(getRam());
 		writeString(getIp().getHostAddress());
 	}
@@ -20,7 +20,7 @@ public class PacketPhantomSymbiote extends PacketPhantom {
 	@Override
 	protected void deserialize_() {
 		this.vpsLabel = readString();
-		this.state = VpsState.valueOf(readString());
+		this.state = VpsState.fromId(readByte());
 		this.ram = readInt();
 		try {
 			this.ip = InetAddress.getByName(readString());
