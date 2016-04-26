@@ -14,6 +14,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import sceat.domain.Core;
+import sceat.domain.adapter.general.IserverMC;
 import sceat.domain.protocol.PacketSender;
 
 public class Symbiote {
@@ -59,6 +61,8 @@ public class Symbiote {
 		}
 	}
 
+	private IserverMC serverBuilder;
+
 	public static void shutDown() {
 		print("Shuting down..");
 		print("Bye.");
@@ -68,8 +72,13 @@ public class Symbiote {
 	public Symbiote(String user, String pass, String host, int port) {
 		instance = this;
 		initLogger();
+		this.serverBuilder = null;
 		new PacketSender(user, pass, host, port);
+		new Core();
+	}
 
+	public IserverMC getServerBuilder() {
+		return serverBuilder;
 	}
 
 	public static void printStackTrace(Exception e) {

@@ -2,11 +2,18 @@ package sceat.domain.protocol.packet;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import sceat.Symbiote;
+import sceat.domain.minecraft.Grades;
+import sceat.domain.minecraft.Statut;
 import sceat.domain.network.Server;
 import sceat.domain.network.Server.ServerType;
 import sceat.domain.protocol.MessagesType;
+import sceat.domain.protocol.PacketSender;
 
 public class PacketPhantomBootServer extends PacketPhantom {
 
@@ -75,8 +82,17 @@ public class PacketPhantomBootServer extends PacketPhantom {
 	}
 
 	@Override
-	public void handleData(MessagesType type) {
-		// TODO:
+	public void handleData(MessagesType tp) {
+		try {
+			if (getVpsLabel() != null) {
+				if (!Symbiote.VpsLabel.equalsIgnoreCase(getVpsLabel())) return;
+			} else if (!getIp().getHostAddress().equals(InetAddress.getLocalHost().getHostAddress())) return;
+			Symbiote.getInstance().getServerBuilder().startServer(getType(), getLabel(), getVpsLabel(), getRam());
+		} catch (Exception e) {
+			Symbiote.printStackTrace(e);
+		} finally {
+			PacketSender.getInstance()
+					.sendServer(new PacketPhantomServerInfo(Statut.BOOTING, label, vpsLabel, ip, getType(), getMaxP(), new HashMap<Grades, Set<UUID>>(), new HashSet<String>(), true));
+		}
 	}
-
 }
