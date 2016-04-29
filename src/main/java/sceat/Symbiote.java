@@ -19,7 +19,9 @@ import org.apache.commons.cli.ParseException;
 
 import sceat.domain.Core;
 import sceat.domain.adapter.general.IserverMC;
+import sceat.domain.network.Server.ServerType;
 import sceat.domain.protocol.PacketSender;
+import sceat.domain.protocol.handler.PacketHandler;
 import sceat.domain.protocol.packet.PacketPhantom;
 import sceat.domain.utils.Constant;
 import sceat.domain.utils.cosmos.MemoryParser;
@@ -83,8 +85,15 @@ public class Symbiote {
 	public Symbiote(String user, String pass, String host, int port) {
 		instance = this;
 		running = true;
+		this.serverBuilder = new IserverMC() {
+
+			@Override
+			public void startServer(ServerType type, String label, String vpsLabel, int ram) {
+				Symbiote.print("Succesfully started mcServer('" + label + "')|VpsLabel('" + vpsLabel + "')|Ram('" + ram + "')");
+			}
+		};
 		PacketPhantom.registerPackets();
-		this.serverBuilder = null;
+		new PacketHandler();
 		new PacketSender(user, pass, host, port);
 		new Core();
 		awaitForInput();

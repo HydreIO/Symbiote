@@ -18,6 +18,7 @@ public abstract class PacketPhantom {
 	public static void registerPackets() {
 		Symbiote.print("Initialising packets...");
 		try {
+			registerPacket((byte) 1, PacketPhantomServerInfo.class);
 			registerPacket((byte) 4, PacketPhantomBootServer.class);
 			registerPacket((byte) 5, PacketPhantomSymbiote.class);
 		} catch (PacketIdAlrealyUsedException e) {
@@ -25,7 +26,7 @@ public abstract class PacketPhantom {
 		}
 	}
 
-	public static final int MAX_PACKET_SIZE = 512;
+	public static final int MAX_PACKET_SIZE = 1024;
 
 	private static final HashMap<Byte, Class<? extends PacketPhantom>> packets = new HashMap<>();
 	private Security secu;

@@ -29,6 +29,10 @@ public class PacketPhantomSymbiote extends PacketPhantom {
 		}
 	}
 
+	public PacketPhantomSymbiote() {
+
+	}
+
 	private String vpsLabel;
 	private VpsState state;
 	private int ram;

@@ -33,11 +33,15 @@ public class PacketPhantomBootServer extends PacketPhantom {
 		this.maxP = srv.getMaxPlayers();
 	}
 
+	public PacketPhantomBootServer() {
+
+	}
+
 	@Override
 	protected void serialize_() {
 		writeString(getLabel());
 		writeString(getVpsLabel());
-		writeString(getType().name());
+		writeByte(getType().getId());
 		writeString(getIp().getHostAddress());
 		writeInt(getRam());
 		writeInt(getMaxP());
@@ -47,7 +51,7 @@ public class PacketPhantomBootServer extends PacketPhantom {
 	protected void deserialize_() {
 		this.label = readString();
 		this.vpsLabel = readString();
-		this.type = ServerType.valueOf(readString());
+		this.type = ServerType.fromByte(readByte());
 		try {
 			this.ip = InetAddress.getByName(readString());
 		} catch (UnknownHostException e) {
