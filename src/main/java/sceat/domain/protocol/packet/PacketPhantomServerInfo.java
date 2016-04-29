@@ -2,6 +2,7 @@ package sceat.domain.protocol.packet;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ public class PacketPhantomServerInfo extends PacketPhantom {
 		this.keys = keys == null ? new HashSet<String>() : keys;
 		this.type = type;
 		this.players = pl == null ? new HashMap<Grades, Set<UUID>>() : pl;
+		if (pl == null) Arrays.stream(Grades.values()).forEach(g -> players.put(g, new HashSet<UUID>()));
 		this.maxp = maxp;
 		this.state = state;
 	}
