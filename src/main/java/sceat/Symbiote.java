@@ -1,8 +1,11 @@
 package sceat;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -74,6 +77,7 @@ public class Symbiote {
 
 	private IserverMC serverBuilder;
 	private boolean running = false;
+	private InetAddress ip;
 
 	public static void shutDown() {
 		Symbiote.getInstance().running = false;
@@ -82,9 +86,35 @@ public class Symbiote {
 		System.exit(0);
 	}
 
+	public InetAddress getIp() {
+		return ip;
+	}
+
 	public Symbiote(String user, String pass, String host, int port) {
 		instance = this;
 		running = true;
+		print("Oppening socket to get Ip...");
+		Socket s = null;
+		try {
+			s = new Socket("google.com", 80);
+			print("Ip founded ! [" + s.getLocalAddress().getHostName() + "]");
+			this.ip = s.getLocalAddress();
+		} catch (IOException e) {
+			printStackTrace(e);
+			print("Unable to find the Ip !");
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e1) {
+				printStackTrace(e1);
+			}
+			shutDown();
+		} finally {
+			try {
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		this.serverBuilder = new IserverMC() {
 
 			@Override

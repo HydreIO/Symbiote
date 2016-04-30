@@ -1,6 +1,5 @@
 package sceat.domain;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import sceat.Symbiote;
@@ -28,7 +27,7 @@ public class Core implements Scheduled {
 
 	@Schedule(rate = 1, unit = TimeUnit.MINUTES)
 	public void run() throws UnknownHostException {
-		PacketSender.getInstance().sendInfos(new PacketPhantomSymbiote(Symbiote.VpsLabel, VpsState.Online, MemoryParser.getRam(), InetAddress.getLocalHost()));
+		PacketSender.getInstance().sendInfos(new PacketPhantomSymbiote(Symbiote.VpsLabel, VpsState.Online, MemoryParser.getRam(), Symbiote.getInstance().getIp()));
 	}
 
 }

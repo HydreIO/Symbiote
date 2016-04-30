@@ -11,7 +11,7 @@ import sceat.domain.utils.cosmos.MemoryParser.Ram.Unit;
 
 public class MemoryParser {
 
-	private static MemoryParser parser = new MemoryParser(() -> Ram.getRam(Unit.GIGABYTES));
+	private static MemoryParser parser = new MemoryParser(() -> (int) (Ram.getRam(Unit.MEGABYTES) * 0.001));
 
 	private int ram;
 

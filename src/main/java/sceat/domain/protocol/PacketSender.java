@@ -1,8 +1,5 @@
 package sceat.domain.protocol;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import sceat.Symbiote;
 import sceat.domain.Security;
 import sceat.domain.adapter.mq.Imessaging;
@@ -21,11 +18,7 @@ public class PacketSender {
 	public PacketSender(String user, String pass, String host, int port) {
 		instance = this;
 		broker = new RabbitMqConnector(user, pass, host, port);
-		try {
-			sendInfos(new PacketPhantomSymbiote(Symbiote.VpsLabel, VpsState.Online, MemoryParser.getRam(), InetAddress.getLocalHost()));
-		} catch (UnknownHostException e) {
-			Symbiote.printStackTrace(e);
-		}
+		sendInfos(new PacketPhantomSymbiote(Symbiote.VpsLabel, VpsState.Online, MemoryParser.getRam(), Symbiote.getInstance().getIp()));
 	}
 
 	public static PacketSender getInstance() {
@@ -41,13 +34,13 @@ public class PacketSender {
 	}
 
 	public void sendServer(PacketPhantomServerInfo pkt) {
-		Symbiote.print(">>>>]SEND] PacketServerInfos |to:SPHANTOM");
+		Symbiote.print("<<<<]RECV] PacketUpdateServer [" + pkt.getLabel() + "|" + pkt.getState().name() + "|players(" + pkt.getPlayers().size() + ")] |to:SPHANTOM");
 		setSecurity(pkt);
 		getBroker().sendServer(pkt.serialize());
 	}
 
 	public void sendInfos(PacketPhantomSymbiote pkt) {
-		Symbiote.print(">>>>]SEND] PacketSymbiote |to:SPHANTOM");
+		Symbiote.print(">>>>]SEND] PacketSymbiote [" + pkt.getVpsLabel() + "|" + pkt.getState() + "|" + pkt.getIp().getHostAddress() + "|Ram(" + pkt.getRam() + ")] |to:SPHANTOM");
 		setSecurity(pkt);
 		getBroker().sendInfos(pkt.serialize());
 	}
