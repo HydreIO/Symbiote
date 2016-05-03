@@ -126,7 +126,7 @@ public class Symbiote {
 		new PacketHandler();
 		new PacketSender(user, pass, host, port);
 		new Core();
-		awaitForInput();
+		// awaitForInput();
 	}
 
 	public boolean isRunning() {

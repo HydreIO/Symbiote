@@ -2,16 +2,17 @@ package sceat.domain.utils.cosmos;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import sceat.Symbiote;
-import sceat.domain.utils.cosmos.MemoryParser.Ram.Unit;
 
 public class MemoryParser {
 
-	private static MemoryParser parser = new MemoryParser(() -> (int) (Ram.getRam(Unit.MEGABYTES) * 0.001));
+	private static MemoryParser parser = new MemoryParser(() -> Ram.getRam());
 
 	private int ram;
 
@@ -47,6 +48,17 @@ public class MemoryParser {
 
 		public static final String COMMAND = "free -t";
 		public static final Pattern RAM_PATTERN = Pattern.compile("Mem: \\s*([0-9]*)");
+
+		public static int getRam() {
+			try {
+				String mem = Files.lines(Paths.get("/proc/meminfo")).findFirst().orElse("a");
+				if (mem.length() < 2) return 0;
+				return (int) (Integer.parseInt(mem.replaceAll("[^-?0-9]+", "")) * 0.000001);
+			} catch (Exception e) {
+				Symbiote.printStackTrace(e);
+				return 0;
+			}
+		}
 
 		public static int getRam(Unit unit) {
 			try {

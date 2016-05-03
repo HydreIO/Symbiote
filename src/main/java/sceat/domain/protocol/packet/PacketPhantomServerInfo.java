@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -118,7 +119,7 @@ public class PacketPhantomServerInfo extends PacketPhantom {
 		return getPlayersPerGrade().values().stream().reduce((s1, s2) -> {
 			s1.addAll(s2);
 			return s1;
-		}).get();
+		}).orElse(Collections.emptySet());
 	}
 
 }
