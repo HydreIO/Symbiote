@@ -27,7 +27,7 @@ public class Core implements Scheduled {
 
 	@Schedule(rate = 1, unit = TimeUnit.MINUTES)
 	public void run() throws UnknownHostException {
-		PacketSender.getInstance().sendInfos(new PacketPhantomSymbiote(Symbiote.VpsLabel, VpsState.Online, MemoryParser.getRam(), Symbiote.getInstance().getIp()));
+		PacketSender.getInstance().sendInfos(new PacketPhantomSymbiote(Symbiote.VpsLabel, VpsState.Online, MemoryParser.getRam(), Symbiote.getInstance().getIp(), PacketSender.created));
 	}
 
 }

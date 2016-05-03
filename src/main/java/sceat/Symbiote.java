@@ -28,6 +28,7 @@ import sceat.domain.protocol.handler.PacketHandler;
 import sceat.domain.protocol.packet.PacketPhantom;
 import sceat.domain.utils.Constant;
 import sceat.domain.utils.cosmos.MemoryParser;
+import sceat.infra.connector.mq.RabbitMqConnector;
 
 public class Symbiote {
 
@@ -41,7 +42,7 @@ public class Symbiote {
 		initLogger();
 		Options opt = new Options();
 		CommandLine cmd = setupOptions(opt, args);
-		Constant.bootPrint().forEach(Symbiote::print);
+		Constant.symbiote.forEach(Symbiote::print);
 		if (!cmd.hasOption("label")) {
 			print("[WARN] Missing argument -label \"label\" (vm host/server label)");
 			shutDown();
@@ -81,6 +82,7 @@ public class Symbiote {
 
 	public static void shutDown() {
 		Symbiote.getInstance().running = false;
+		RabbitMqConnector.getInstance().close();
 		print("Shuting down..");
 		print("Bye.");
 		System.exit(0);

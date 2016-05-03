@@ -9,11 +9,29 @@ import sceat.domain.protocol.MessagesType;
 
 public class PacketPhantomSymbiote extends PacketPhantom {
 
+	private String vpsLabel;
+	private VpsState state;
+	private int ram;
+	private long created;
+	private InetAddress ip;
+
+	public PacketPhantomSymbiote(String vpsLabel, VpsState state, int ram, InetAddress ip, long created) {
+		this.vpsLabel = vpsLabel;
+		this.created = created;
+		this.state = state;
+		this.ip = ip;
+		this.ram = ram;
+	}
+
+	public PacketPhantomSymbiote() {
+	}
+
 	@Override
 	protected void serialize_() {
 		writeString(getVpsLabel());
 		writeByte(getState().getId());
 		writeInt(getRam());
+		writeLong(created);
 		writeString(getIp().getHostAddress());
 	}
 
@@ -22,6 +40,7 @@ public class PacketPhantomSymbiote extends PacketPhantom {
 		this.vpsLabel = readString();
 		this.state = VpsState.fromId(readByte());
 		this.ram = readInt();
+		this.created = readLong();
 		try {
 			this.ip = InetAddress.getByName(readString());
 		} catch (UnknownHostException e) {
@@ -29,20 +48,8 @@ public class PacketPhantomSymbiote extends PacketPhantom {
 		}
 	}
 
-	public PacketPhantomSymbiote() {
-
-	}
-
-	private String vpsLabel;
-	private VpsState state;
-	private int ram;
-	private InetAddress ip;
-
-	public PacketPhantomSymbiote(String vpsLabel, VpsState state, int ram, InetAddress ip) {
-		this.vpsLabel = vpsLabel;
-		this.state = state;
-		this.ip = ip;
-		this.ram = ram;
+	public long getCreated() {
+		return created;
 	}
 
 	public String getVpsLabel() {

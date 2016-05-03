@@ -14,11 +14,12 @@ public class PacketSender {
 
 	private static PacketSender instance;
 	private Imessaging broker;
+	public static final long created = System.currentTimeMillis();
 
 	public PacketSender(String user, String pass, String host, int port) {
 		instance = this;
 		broker = new RabbitMqConnector(user, pass, host, port);
-		sendInfos(new PacketPhantomSymbiote(Symbiote.VpsLabel, VpsState.Online, MemoryParser.getRam(), Symbiote.getInstance().getIp()));
+		sendInfos(new PacketPhantomSymbiote(Symbiote.VpsLabel, VpsState.Online, MemoryParser.getRam(), Symbiote.getInstance().getIp(), created));
 	}
 
 	public static PacketSender getInstance() {
