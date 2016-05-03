@@ -123,6 +123,11 @@ public class Symbiote {
 			public void startServer(ServerType type, String label, String vpsLabel, int ram) {
 				Symbiote.print("Succesfully started mcServer('" + label + "')|VpsLabel('" + vpsLabel + "')|Ram('" + ram + "')");
 			}
+
+			@Override
+			public void killProcess(String server, boolean removeFolder, boolean extractLog) {
+				Symbiote.print("Not implemented Yet (KILL PROCESS");
+			}
 		};
 		PacketPhantom.registerPackets();
 		new PacketHandler();

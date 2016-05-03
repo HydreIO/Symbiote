@@ -18,9 +18,10 @@ public abstract class PacketPhantom {
 	public static void registerPackets() {
 		Symbiote.print("Initialising packets...");
 		try {
-			registerPacket((byte) 1, PacketPhantomServerInfo.class);
-			registerPacket((byte) 4, PacketPhantomBootServer.class);
-			registerPacket((byte) 5, PacketPhantomSymbiote.class);
+			registerPacket((byte) 1, PacketPhantomServerInfo.class); // servers
+			registerPacket((byte) 4, PacketPhantomBootServer.class); // server boot
+			registerPacket((byte) 5, PacketPhantomSymbiote.class); // vps
+			registerPacket((byte) 8, PacketPhantomKillProcess.class); // kill server cg overhead
 		} catch (PacketIdAlrealyUsedException e) {
 			Symbiote.printStackTrace(e);
 		}
