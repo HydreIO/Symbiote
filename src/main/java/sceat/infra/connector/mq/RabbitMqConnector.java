@@ -94,7 +94,7 @@ public class RabbitMqConnector implements Imessaging {
 	// **************** Utils *****************
 
 	/**
-	 * D�claration d'un nouveau type d'�change (type de message comme le ban d'un joueur)
+	 * Déclaration d'un nouveau type d'échange (type de message comme le ban d'un joueur)
 	 *
 	 * @param exchange
 	 */
