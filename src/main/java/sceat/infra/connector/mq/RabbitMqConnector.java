@@ -2,35 +2,38 @@ package sceat.infra.connector.mq;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import sceat.Symbiote;
-import sceat.domain.adapter.mq.Imessaging;
-import sceat.domain.protocol.DestinationKey;
+import sceat.domain.common.java.Lambdas;
+import sceat.domain.common.mq.Broker;
+import sceat.domain.common.system.Log;
+import sceat.domain.common.system.Root;
+import sceat.domain.common.thread.ScThread;
 import sceat.domain.protocol.MessagesType;
+import sceat.domain.protocol.RoutingKey;
 import sceat.domain.protocol.packet.PacketPhantomServerInfo;
 import sceat.domain.protocol.packet.PacketPhantomSymbiote;
+import sceat.domain.utils.Try;
+import sceat.domain.utils.Try.TryVoidRunnable;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class RabbitMqConnector implements Imessaging {
+public class RabbitMqConnector implements Broker {
 
-	private static RabbitMqConnector instance;
+	private static final RabbitMqConnector instance = new RabbitMqConnector();
 	private RabbitMqReceiver receiver;
-
-	public static boolean routingEnabled = true;
-
 	private ConnectionFactory factory = new ConnectionFactory();
 	private static Connection connection;
-
 	private static Channel channel;
+	public static final String type = "direct";
 
-	public static final String type = routingEnabled ? "direct" : "fanout";
+	private final String PHANTOM_key = RoutingKey.genKey(RoutingKey.SPHANTOM);
 
-	public RabbitMqConnector(String user, String pass, String host, int port) {
-		init(user, pass, host, port);
+	private RabbitMqConnector() {
 	}
 
 	public RabbitMqReceiver getReceiver() {
@@ -38,31 +41,28 @@ public class RabbitMqConnector implements Imessaging {
 	}
 
 	/**
-	 * Initialisation de la connection et du channel, ainsi que d�claration des messages json a envoyer (par leur nom : banP etc) On initialise aussi les receiver (une fois le channel cr��)
+	 * Initialisation de la connection et du channel, ainsi que déclaration des messages json a envoyer (par leur nom : banP etc) On initialise aussi les receiver (une fois le channel créé)
 	 */
-	public void init(String user, String passwd, String host, int port) {
-		instance = this;
-		getFactory().setHost(host);
-		getFactory().setPort(port);
-		getFactory().setUsername(user);
-		getFactory().setPassword(passwd);
-		try {
-			connection = getFactory().newConnection();
-			channel = getConnection().createChannel();
-		} catch (IOException | TimeoutException e) {
-			Symbiote.print("Unable to access message broker RMQ, Symbiote is going down..", true);
-			Symbiote.printStackTrace(e);
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e1) {
-				Symbiote.printStackTrace(e);
-			}
-			Symbiote.shutDown();
-			return;
-		}
-		Symbiote.print("Sucessfully connected to broker RMQ");
-		Arrays.stream(MessagesType.values()).forEach(this::exchangeDeclare);
-		this.receiver = new RabbitMqReceiver();
+	public static void init(String user, String passwd, String host, int port) {
+		RabbitMqConnector co = instance;
+		ConnectionFactory fac = co.getFactory();
+		Lambdas.<ConnectionFactory> emptyConsumer((f) -> {
+			f.setHost(host);
+			f.setPort(port);
+			f.setUsername(user);
+			f.setPassword(passwd);
+		}).accept(fac);
+		Try.orVoidWithActions(TryVoidRunnable.empty(() -> {
+			connection = fac.newConnection();
+			channel = connection.createChannel();
+		}), true, () -> {
+			Log.out("Unable to access message broker RMQ, Symbiote is going down..");
+			ScThread.sleep(3, TimeUnit.SECONDS);
+			Root.exit(false);
+		});
+		Log.out("Sucessfully connected to broker RMQ");
+		Arrays.stream(MessagesType.values()).forEach(co::exchangeDeclare);
+		co.receiver = new RabbitMqReceiver();
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class RabbitMqConnector implements Imessaging {
 	 */
 	public void basicPublich(MessagesType msg, String key, byte[] array) {
 		try {
-			getChannel().basicPublish(msg.getName(), routingEnabled ? key : "", null, array);
+			getChannel().basicPublish(msg.getName(), key, null, array);
 		} catch (IOException e) {
 			Symbiote.printStackTrace(e);
 		}
@@ -130,12 +130,12 @@ public class RabbitMqConnector implements Imessaging {
 
 	@Override
 	public void sendServer(PacketPhantomServerInfo pkt) {
-		basicPublich(MessagesType.UPDATE_SERVER, DestinationKey.SPHANTOM, pkt.toByteArray());
+		basicPublich(MessagesType.UPDATE_SERVER, this.PHANTOM_key, pkt.toByteArray());
 	}
 
 	@Override
 	public void sendInfos(PacketPhantomSymbiote pkt) {
-		basicPublich(MessagesType.SYMBIOTE_INFOS, DestinationKey.SPHANTOM, pkt.toByteArray());
+		basicPublich(MessagesType.SYMBIOTE_INFOS, this.PHANTOM_key, pkt.toByteArray());
 	}
 
 }

@@ -7,6 +7,8 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -21,7 +23,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import sceat.domain.Core;
-import sceat.domain.adapter.general.IserverMC;
+import sceat.domain.common.general.IserverMC;
+import sceat.domain.common.system.Log;
+import sceat.domain.common.thread.Async;
 import sceat.domain.network.Server.ServerType;
 import sceat.domain.protocol.PacketSender;
 import sceat.domain.protocol.handler.PacketHandler;
@@ -30,7 +34,7 @@ import sceat.domain.utils.Constant;
 import sceat.domain.utils.cosmos.MemoryParser;
 import sceat.infra.connector.mq.RabbitMqConnector;
 
-public class Symbiote {
+public class Symbiote implements Log, Async {
 
 	public static Logger logger = Logger.getLogger("Symbiote.class");
 	public static File folder;
@@ -255,5 +259,35 @@ public class Symbiote {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void logOut(String log) {
+		print(log);
+	}
+
+	@Override
+	public void logPkt(PacketPhantom pkt, boolean in) {
+		logOut((in ? "<RECV] " : "[SEND> ") + pkt.toString());
+	}
+
+	@Override
+	public void logTrace(Exception e) {
+		printStackTrace(e);
+	}
+
+	@Override
+	public void logTrace(Throwable t) {
+		printStackTrace(t);
+	}
+
+	@Override
+	public void run(Runnable r) {
+		CompletableFuture.runAsync(r);
+	}
+
+	@Override
+	public <T> CompletableFuture<T> supply(Supplier<T> t) {
+		return CompletableFuture.<T> supplyAsync(t);
 	}
 }

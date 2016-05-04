@@ -4,7 +4,6 @@ import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -12,7 +11,7 @@ import java.util.UUID;
 import sceat.domain.minecraft.Grades;
 import sceat.domain.minecraft.RessourcePack;
 import sceat.domain.minecraft.Statut;
-import sceat.domain.protocol.DestinationKey;
+import sceat.domain.protocol.RoutingKey;
 
 public class Server {
 
@@ -147,35 +146,19 @@ public class Server {
 		}).get();
 	}
 
-	public static enum ServerType {
-		Proxy(
-				(byte) 0,
-				RessourcePack.RESSOURCE_PACK_DEFAULT,
-				DestinationKey.PROXY,
-				DestinationKey.HUBS_AND_PROXY,
-				DestinationKey.HUBS_PROXY_SPHANTOM,
-				DestinationKey.HUBS_PROXY_SPHANTOM_SYMBIOTE,
-				DestinationKey.ALL,
-				DestinationKey.ALL_SPHANTOM),
-		Lobby(
-				(byte) 1,
-				RessourcePack.RESSOURCE_PACK_DEFAULT,
-				DestinationKey.ALL,
-				DestinationKey.HUBS,
-				DestinationKey.HUBS_AND_PROXY,
-				DestinationKey.HUBS_PROXY_SPHANTOM,
-				DestinationKey.HUBS_PROXY_SPHANTOM_SYMBIOTE,
-				DestinationKey.ALL_SPHANTOM),
-		Agares((byte) 2, RessourcePack.AGARES, DestinationKey.ALL, DestinationKey.SERVEURS, DestinationKey.SRV_AGARES, DestinationKey.ALL_SPHANTOM),
-		AresRpg((byte) 3, RessourcePack.ARESRPG, DestinationKey.ALL, DestinationKey.SERVEURS, DestinationKey.SRV_ARES, DestinationKey.ALL_SPHANTOM),
-		Iron((byte) 4, RessourcePack.IRON, DestinationKey.ALL, DestinationKey.SERVEURS, DestinationKey.SRV_IRON, DestinationKey.ALL_SPHANTOM);
+	public enum ServerType {
+		PROXY((byte) 0, RessourcePack.RESSOURCE_PACK_DEFAULT, RoutingKey.PROXY),
+		LOBBY((byte) 1, RessourcePack.RESSOURCE_PACK_DEFAULT, RoutingKey.HUBS),
+		AGARES((byte) 2, RessourcePack.AGARES, RoutingKey.SERVERS),
+		ARES_RPG((byte) 3, RessourcePack.ARESRPG, RoutingKey.SERVERS),
+		IRON((byte) 4, RessourcePack.IRON, RoutingKey.SERVERS);
 
 		private byte id;
-		private String[] keys;
+		private RoutingKey key;
 		private RessourcePack pack;
 
-		private ServerType(byte id, RessourcePack pack, String... keys) {
-			this.keys = keys;
+		private ServerType(byte id, RessourcePack pack, RoutingKey key) {
+			this.key = key;
 			this.id = id;
 			this.pack = pack;
 		}
@@ -192,16 +175,8 @@ public class Server {
 			return Arrays.stream(values()).filter(i -> i.id == id).findFirst().orElse(null);
 		}
 
-		public String[] getKeys() {
-			return keys;
-		}
-
-		public List<String> getKeysAslist() {
-			return Arrays.asList(getKeys());
-		}
-
-		public Set<String> getKeysAsSet() {
-			return new HashSet<String>(getKeysAslist());
+		public RoutingKey getKey() {
+			return key;
 		}
 	}
 

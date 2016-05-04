@@ -1,4 +1,4 @@
-package sceat.domain.adapter.general;
+package sceat.domain.common.general;
 
 import sceat.domain.network.Server.ServerType;
 

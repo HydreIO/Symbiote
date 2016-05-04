@@ -45,6 +45,11 @@ public class PacketPhantomServerInfo extends PacketPhantom {
 	}
 
 	@Override
+	public String toString() {
+		return "PacketUpdateServer [" + getLabel() + "|" + getState().name() + "|players(" + getPlayers().size() + ")]";
+	}
+
+	@Override
 	protected void serialize_() {
 		writeString(getLabel());
 		writeString(this.vpsLabel);

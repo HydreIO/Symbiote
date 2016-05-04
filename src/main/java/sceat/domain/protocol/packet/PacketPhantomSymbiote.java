@@ -27,6 +27,11 @@ public class PacketPhantomSymbiote extends PacketPhantom {
 	}
 
 	@Override
+	public String toString() {
+		return "PacketSymbiote [" + getVpsLabel() + "|" + getState() + "|" + getIp().getHostAddress() + "|Ram(" + getRam() + ")]";
+	}
+
+	@Override
 	protected void serialize_() {
 		writeString(getVpsLabel());
 		writeByte(getState().getId());
