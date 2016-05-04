@@ -3,7 +3,6 @@ package sceat.domain.protocol.packet;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,15 +24,13 @@ public class PacketPhantomServerInfo extends PacketPhantom {
 	private int maxp;
 	private String ip;
 	private Map<Grades, Set<UUID>> players = new HashMap<Grades, Set<UUID>>();
-	private Set<String> keys = new HashSet<String>();
 	private Statut state;
 	private boolean fromSymbiote = false;
 
-	public PacketPhantomServerInfo(Statut state, String label, String vpsLabel, InetAddress ip, ServerType type, int maxp, Map<Grades, Set<UUID>> pl, Set<String> keys, boolean fromSymbiote) {
+	public PacketPhantomServerInfo(Statut state, String label, String vpsLabel, InetAddress ip, ServerType type, int maxp, Map<Grades, Set<UUID>> pl, boolean fromSymbiote) {
 		this.ip = ip.getHostAddress();
 		this.vpsLabel = vpsLabel;
 		this.label = label;
-		this.keys = keys == null ? new HashSet<String>() : keys;
 		this.type = type;
 		this.players = pl == null ? new HashMap<Grades, Set<UUID>>() : pl;
 		if (pl == null) Arrays.stream(Grades.values()).forEach(g -> players.put(g, new HashSet<UUID>()));
@@ -57,7 +54,6 @@ public class PacketPhantomServerInfo extends PacketPhantom {
 		writeInt(getMaxp());
 		writeString(this.ip);
 		writeMap(this.players, d -> writeString(d.name()), d -> writeCollection(d, e -> writeString(e.toString())));
-		writeCollection(this.keys, this::writeString);
 		writeString(getState().name());
 		writeBoolean(isFromSymbiote());
 	}
@@ -70,7 +66,6 @@ public class PacketPhantomServerInfo extends PacketPhantom {
 		this.maxp = readInt();
 		this.ip = readString();
 		this.players = readMap(() -> Grades.valueOf(readString()), () -> readCollection(new HashSet<UUID>(), () -> UUID.fromString(readString())));
-		this.keys = readCollection(new HashSet<String>(), this::readString);
 		this.state = Statut.valueOf(readString());
 		this.fromSymbiote = readBoolean();
 	}
@@ -85,10 +80,6 @@ public class PacketPhantomServerInfo extends PacketPhantom {
 
 	public Statut getState() {
 		return state;
-	}
-
-	public Collection<String> getKeys() {
-		return keys;
 	}
 
 	public String getVpsLabel() {

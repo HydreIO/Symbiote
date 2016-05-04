@@ -3,7 +3,6 @@ package sceat.domain.protocol.packet;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -96,8 +95,7 @@ public class PacketPhantomBootServer extends PacketPhantom {
 		} catch (Exception e) {
 			Symbiote.printStackTrace(e);
 		} finally {
-			PacketSender.getInstance()
-					.sendServer(new PacketPhantomServerInfo(Statut.BOOTING, label, vpsLabel, ip, getType(), getMaxP(), new HashMap<Grades, Set<UUID>>(), new HashSet<String>(), true));
+			PacketSender.getInstance().sendServer(new PacketPhantomServerInfo(Statut.BOOTING, label, vpsLabel, ip, getType(), getMaxP(), new HashMap<Grades, Set<UUID>>(), true));
 		}
 	}
 }

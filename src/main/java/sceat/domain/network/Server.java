@@ -3,7 +3,6 @@ package sceat.domain.network;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -22,7 +21,6 @@ public class Server {
 	private Statut status;
 	private RessourcePack pack;
 	private Map<Grades, Set<UUID>> players = new HashMap<Grades, Set<UUID>>();
-	private Set<String> keys = new HashSet<String>();
 	private InetAddress ipadress;
 	private long timeout;
 
@@ -33,14 +31,13 @@ public class Server {
 	 */
 	private boolean needed = true;
 
-	public Server(String label, ServerType type, Statut state, int maxplayer, InetAddress ip, RessourcePack pack, String... destinationKeys) {
+	public Server(String label, ServerType type, Statut state, int maxplayer, InetAddress ip, RessourcePack pack) {
 		this.label = label;
 		this.type = type;
 		this.maxPlayers = maxplayer;
 		this.status = state;
 		this.pack = pack;
 		this.ipadress = ip;
-		Arrays.stream(destinationKeys).forEach(keys::add);
 	}
 
 	public Server setVpsLabel(String label) {
@@ -89,11 +86,6 @@ public class Server {
 		return this;
 	}
 
-	public Server setKeys(Set<String> keys) {
-		this.keys = keys;
-		return this;
-	}
-
 	public Server setIpadress(InetAddress ipadress) {
 		this.ipadress = ipadress;
 		return this;
@@ -105,10 +97,6 @@ public class Server {
 
 	public InetAddress getIpadress() {
 		return ipadress;
-	}
-
-	public Set<String> getKeys() {
-		return keys;
 	}
 
 	public ServerType getType() {
