@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 group = 'fr.aresrpg'
-version = System.getProperty("build.number") == null ? '1.4' : System.getProperty("build.number");
+version = System.getenv("BUILD_NUMBER") == null ? '1.4' : System.getenv("BUILD_NUMBER");
 
 compileJava.options.encoding = 'UTF-8'
 
