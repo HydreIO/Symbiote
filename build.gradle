@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 group = 'fr.aresrpg'
-version = '1.4'
+version = System.getProperty("build.number") == null ? '1.4' : System.getProperty("build.number");
 
 compileJava.options.encoding = 'UTF-8'
 
@@ -16,4 +16,10 @@ repositories {
 dependencies {
     compile 'commons-cli:commons-cli:1.2'
     compile 'com.rabbitmq:amqp-client:3.6.1'
+}
+
+task shaded(type: Jar) {
+    classifier = 'shaded'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
